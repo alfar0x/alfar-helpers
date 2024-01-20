@@ -2,15 +2,19 @@
   "name": "@alfar/helpers",
   "version": "0.0.6",
   "description": "Helper functions for myself",
-  "author": "alfar0x",
+  "author": "alfarcrypto@gmail.com",
   "license": "MIT",
   "main": "./lib/index.js",
   "module": "./lib/index.mjs",
   "types": "./lib/index.d.ts",
-  "git": "https://github.com/alfar0x/alfar-helpers",
   "files": [
     "lib"
   ],
+  "homepage": "https://github.com/alfar0x/alfar-helpers#readme",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/alfar0x/alfar-helpers"
+  },
   "scripts": {
     "build": "tsup"
   },
