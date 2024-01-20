@@ -1,4 +1,4 @@
-yarn lint --fix
+yarn eslint --fix
 yarn build
 git add .
 git commit -m "patch"

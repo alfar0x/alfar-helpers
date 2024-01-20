@@ -7,7 +7,7 @@ import { z, ZodNever, Primitive, ZodLiteral } from 'zod';
 declare const onlyUnique: <T>(value: T, index: number, array: T[]) => boolean;
 declare const sortStrings: (a: string, b: string) => number;
 declare const splitIntoAvgChunks: <T>(arr: T[], maxChunkSize: number) => T[][];
-declare const formatShortString: (str: string, symbolsCount: number, endSymbols?: number) => string;
+declare const zip: <T>(...arrays: T[][]) => T[][];
 
 declare const formatRel: (sec: number) => string;
 
@@ -39,7 +39,7 @@ declare class IniConfig<F extends z.ZodTypeAny, D extends z.ZodTypeAny> {
     });
     private getFileData;
     dynamic(): z.TypeOf<D>;
-    checkIsFileValid(): boolean;
+    private checkIsFileValid;
     resetFile(): void;
 }
 declare const iniNumberSchema: z.ZodEffects<z.ZodString, number, string>;
@@ -155,6 +155,7 @@ declare const replaceAll: (str: string, replacers: {
     search: string;
     replace: string;
 }[]) => string;
+declare const formatShortString: (str: string, symbolsCount: number, endSymbols?: number) => string;
 
 type MappedZodLiterals<T extends readonly Primitive[]> = {
     -readonly [K in keyof T]: ZodLiteral<T[K]>;
@@ -171,4 +172,4 @@ declare const formatZodError: (issues: z.ZodIssue[]) => string;
 
 declare const ipSchema: z.ZodEffects<z.ZodString, string, string>;
 
-export { IniConfig, ProgressState, type ProxyItem, Queue, Telegram, appendFile, createFiles, createUnionSchema, evmAddressSchema, evmPrivateKeySchema, formatRel, formatShortString, formatUrlParams, formatZodError, getMyIp, getObjectKeys, getProxyAgent, iniNumberSchema, initDefaultLogger, ipSchema, nowPrefix, onlyUnique, parseProxy, randomChoice, randomChoices, randomFloat, randomInt, randomUserAgent, readByLine, readFile, readdir, replaceAll, roundToDecimal, shuffle, sleep, sortStrings, splitIntoAvgChunks, waitInternetConnectionLoop, writeFile };
+export { IniConfig, ProgressState, type ProxyItem, Queue, Telegram, appendFile, createFiles, createUnionSchema, evmAddressSchema, evmPrivateKeySchema, formatRel, formatShortString, formatUrlParams, formatZodError, getMyIp, getObjectKeys, getProxyAgent, iniNumberSchema, initDefaultLogger, ipSchema, nowPrefix, onlyUnique, parseProxy, randomChoice, randomChoices, randomFloat, randomInt, randomUserAgent, readByLine, readFile, readdir, replaceAll, roundToDecimal, shuffle, sleep, sortStrings, splitIntoAvgChunks, waitInternetConnectionLoop, writeFile, zip };
