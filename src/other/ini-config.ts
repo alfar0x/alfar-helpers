@@ -117,4 +117,9 @@ class IniConfig<F extends z.ZodTypeAny, D extends z.ZodTypeAny> {
   }
 }
 
+export const iniNumberSchema = z
+  .string()
+  .regex(/\d+/, "Must be a number")
+  .transform((str) => Number(str));
+
 export default IniConfig;
