@@ -48,17 +48,17 @@ class IniConfig<F extends z.ZodTypeAny, D extends z.ZodTypeAny> {
     });
 
     try {
-      const { fixed, dynamic } = this.getConfigData();
+      const { fixed, dynamic } = this.getFileData();
 
       this._dynamic = dynamic;
       this.fixed = fixed;
     } catch (error) {
-      this.updateConfig();
+      this.resetFile();
       throw error;
     }
   }
 
-  private getConfigData() {
+  private getFileData() {
     const iniContent = readFile(this.fileName);
     const parsedIni = ini.parse(iniContent);
     const result = this.schema.safeParse(parsedIni);
@@ -72,7 +72,7 @@ class IniConfig<F extends z.ZodTypeAny, D extends z.ZodTypeAny> {
 
   public dynamic() {
     try {
-      this._dynamic = this.getConfigData().dynamic;
+      this._dynamic = this.getFileData().dynamic;
     } catch (error) {
       const msg = (error as Error)?.message || "undefined error";
 
@@ -84,11 +84,7 @@ class IniConfig<F extends z.ZodTypeAny, D extends z.ZodTypeAny> {
     return this._dynamic;
   }
 
-  initializeConfig = () => {
-    writeFile(this.fileName, ini.stringify(this.defaultValues));
-  };
-
-  checkIsConfigValid() {
+  checkIsFileValid() {
     try {
       const iniContent = readFile(this.fileName);
       const parsedIni = ini.parse(iniContent);
@@ -99,8 +95,8 @@ class IniConfig<F extends z.ZodTypeAny, D extends z.ZodTypeAny> {
     }
   }
 
-  updateConfig() {
-    if (this.checkIsConfigValid()) return;
+  resetFile() {
+    if (this.checkIsFileValid()) return;
 
     try {
       const splittedName = this.fileName.split("/");
@@ -113,7 +109,7 @@ class IniConfig<F extends z.ZodTypeAny, D extends z.ZodTypeAny> {
       writeFile(backupFileName, configBackup);
     } catch (error) {}
 
-    this.initializeConfig();
+    writeFile(this.fileName, ini.stringify(this.defaultValues));
   }
 }
 
