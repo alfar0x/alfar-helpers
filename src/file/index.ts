@@ -29,6 +29,17 @@ export const createFiles = (paths: string[]) => {
   });
 };
 
+export const writeFile = (
+  name: fs.PathOrFileDescriptor,
+  data: string | Uint8Array
+) => {
+  if (typeof name === "string") {
+    createFiles([name]);
+  }
+
+  fs.writeFileSync(name, data, { encoding });
+};
+
 export const readdir = (dir: fs.PathLike) => fs.readdirSync(dir);
 
 export const readFile = (name: fs.PathOrFileDescriptor) =>
@@ -41,8 +52,3 @@ export const appendFile = (
   name: fs.PathOrFileDescriptor,
   data: string | Uint8Array
 ) => fs.appendFileSync(name, data, { encoding });
-
-export const writeFile = (
-  name: fs.PathOrFileDescriptor,
-  data: string | Uint8Array
-) => fs.writeFileSync(name, data, { encoding });

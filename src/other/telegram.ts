@@ -133,7 +133,7 @@ class Telegram {
       .filter(onlyUnique)
       .filter(Boolean);
 
-    return filtered;
+    return filtered as string[];
   }
 }
 

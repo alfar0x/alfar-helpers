@@ -1,51 +1,120 @@
 import * as ini from "ini";
-import { z, ZodObject } from "zod";
+
+import { formatZodError } from "../zod";
+import { ZodOptional, z } from "zod";
 import { nowPrefix } from ".";
 import { readFile, writeFile } from "../file";
 
-class IniConfig<T extends ZodObject<any, any, any>> {
+class IniConfig<F extends z.ZodTypeAny, D extends z.ZodTypeAny> {
   private readonly fileName: string;
-  private readonly configSchema: T;
-  private readonly defaultValues: z.infer<T>;
 
-  constructor(fileName: string, configSchema: T, defaultValues: z.infer<T>) {
+  private readonly schema: z.ZodObject<{
+    fixed: F | ZodOptional<F>;
+    dynamic: D | ZodOptional<D>;
+  }>;
+
+  public readonly fixed: z.infer<F>;
+  private _dynamic: z.infer<D>;
+
+  private onDynamicError: (msg: string) => void;
+  private defaultValues: { fixed: z.infer<F>; dynamic: z.infer<D> };
+
+  public constructor(params: {
+    fileName: string;
+    fixedSchema: F;
+    dynamicSchema: D;
+    onDynamicError: (msg: string) => void;
+    defaultValues: { fixed: z.infer<F>; dynamic: z.infer<D> };
+  }) {
+    const {
+      fileName,
+      fixedSchema,
+      dynamicSchema,
+      onDynamicError,
+      defaultValues,
+    } = params;
+
     this.fileName = fileName;
-    this.configSchema = configSchema;
+    this.onDynamicError = onDynamicError;
     this.defaultValues = defaultValues;
 
-    this.initializeConfig();
+    this.schema = z.object({
+      dynamic: Object.keys(defaultValues.dynamic).length
+        ? dynamicSchema
+        : dynamicSchema.optional(),
+      fixed: Object.keys(defaultValues.fixed).length
+        ? fixedSchema
+        : fixedSchema.optional(),
+    });
+
+    try {
+      const { fixed, dynamic } = this.getConfigData();
+
+      this._dynamic = dynamic;
+      this.fixed = fixed;
+    } catch (error) {
+      this.updateConfig();
+      throw error;
+    }
   }
 
-  getConfig = () => {
+  private getConfigData() {
     const iniContent = readFile(this.fileName);
     const parsedIni = ini.parse(iniContent);
+    const result = this.schema.safeParse(parsedIni);
 
-    return this.configSchema.parse(parsedIni);
-  };
+    if (result.success) return result.data;
 
-  private initializeConfig = () => {
+    const errorMessage = formatZodError(result.error.issues);
+
+    throw new Error(errorMessage);
+  }
+
+  public dynamic() {
+    try {
+      this._dynamic = this.getConfigData().dynamic;
+    } catch (error) {
+      const msg = (error as Error)?.message || "undefined error";
+
+      this.onDynamicError(
+        `used the previous dynamic value due to error. Details: ${msg}`
+      );
+    }
+
+    return this._dynamic;
+  }
+
+  initializeConfig = () => {
     writeFile(this.fileName, ini.stringify(this.defaultValues));
   };
 
-  checkIsConfigValid = () => {
-    const iniContent = readFile(this.fileName);
-    const parsedIni = ini.parse(iniContent);
+  checkIsConfigValid() {
+    try {
+      const iniContent = readFile(this.fileName);
+      const parsedIni = ini.parse(iniContent);
 
-    return this.configSchema.safeParse(parsedIni).success;
-  };
+      return this.schema.safeParse(parsedIni).success;
+    } catch (error) {
+      return false;
+    }
+  }
 
-  updateConfig = () => {
+  updateConfig() {
     if (this.checkIsConfigValid()) return;
 
-    const configBackup = readFile(this.fileName);
-    writeFile(`./input/${nowPrefix()}-config-backup.ini`, configBackup);
-    this.initializeConfig();
-  };
-}
+    try {
+      const splittedName = this.fileName.split("/");
+      const fileName = splittedName[splittedName.length - 1];
 
-export const iniNumberSchema = z
-  .string()
-  .regex(/\d+/, "Must be a number")
-  .transform((str) => Number(str));
+      const backupFileName =
+        splittedName.slice(0, -1).join("/") + `/${nowPrefix()}_${fileName}`;
+
+      const configBackup = readFile(this.fileName);
+      writeFile(backupFileName, configBackup);
+    } catch (error) {}
+
+    this.initializeConfig();
+  }
+}
 
 export default IniConfig;
