@@ -5,7 +5,7 @@ const customFormat = format.printf(
   ({ level, message, timestamp }) => `${timestamp} | ${level} | ${message}`
 );
 
-const initLogger = () => {
+const initDefaultLogger = (consoleLevel: "info" | "debug" = "info") => {
   const time = nowPrefix();
 
   const formatTimestamp = format.timestamp({ format: "HH:mm:ss" });
@@ -13,7 +13,7 @@ const initLogger = () => {
   const logger = createLogger({
     transports: [
       new transports.Console({
-        level: "info",
+        level: consoleLevel,
         format: format.combine(
           format.colorize(),
           format.splat(),
@@ -42,6 +42,4 @@ const initLogger = () => {
   return logger;
 };
 
-const logger = initLogger();
-
-export default logger;
+export default initDefaultLogger;
