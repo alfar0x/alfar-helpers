@@ -17,15 +17,10 @@ export const splitIntoAvgChunks = <T>(arr: T[], maxChunkSize: number) => {
   return res;
 };
 
-export const formatShortString = (
-  str: string,
-  symbolsCount: number,
-  endSymbols?: number
-) => {
-  if (str.length <= symbolsCount * 2) return str;
+export const zip = <T>(...arrays: T[][]) => {
+  if (arrays.some((a) => a.length !== arrays[0].length)) {
+    throw new Error(`Length must be equal`);
+  }
 
-  const start = str.substring(0, symbolsCount);
-  const end = str.substring(str.length - (endSymbols || symbolsCount));
-
-  return `${start}...${end}`;
+  return arrays[0].map((_, i) => arrays.map((a) => a[i]));
 };
