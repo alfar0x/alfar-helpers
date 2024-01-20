@@ -40,7 +40,7 @@ declare class IniConfig<F extends z.ZodTypeAny, D extends z.ZodTypeAny> {
     private getFileData;
     dynamic(): z.TypeOf<D>;
     private checkIsFileValid;
-    resetFile(): void;
+    resetFile(): boolean;
 }
 declare const iniNumberSchema: z.ZodEffects<z.ZodString, number, string>;
 
