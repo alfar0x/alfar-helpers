@@ -43,4 +43,9 @@ class Config<T extends ZodObject<any, any, any>> {
   };
 }
 
+export const iniNumberSchema = z
+  .string()
+  .regex(/\d+/, "Must be a number")
+  .transform((str) => Number(str));
+
 export default Config;
