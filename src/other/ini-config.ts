@@ -47,15 +47,10 @@ class IniConfig<F extends z.ZodTypeAny, D extends z.ZodTypeAny> {
         : fixedSchema.optional(),
     });
 
-    try {
-      const { fixed, dynamic } = this.getFileData();
+    const { fixed, dynamic } = this.getFileData();
 
-      this._dynamic = dynamic;
-      this.fixed = fixed;
-    } catch (error) {
-      this.resetFile();
-      throw error;
-    }
+    this._dynamic = dynamic;
+    this.fixed = fixed;
   }
 
   private getFileData() {
@@ -66,6 +61,8 @@ class IniConfig<F extends z.ZodTypeAny, D extends z.ZodTypeAny> {
     if (result.success) return result.data;
 
     const errorMessage = formatZodError(result.error.issues);
+
+    this.resetFile();
 
     throw new Error(errorMessage);
   }
@@ -84,7 +81,7 @@ class IniConfig<F extends z.ZodTypeAny, D extends z.ZodTypeAny> {
     return this._dynamic;
   }
 
-  checkIsFileValid() {
+  private checkIsFileValid() {
     try {
       const iniContent = readFile(this.fileName);
       const parsedIni = ini.parse(iniContent);
