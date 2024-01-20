@@ -1,11 +1,11 @@
 import { HttpsProxyAgent } from "https-proxy-agent";
 import { SocksProxyAgent } from "socks-proxy-agent";
 import { z } from "zod";
-import { ipOrDomainSchema } from "../zod";
+import { ipSchema } from "../zod";
 
 const proxySchema = z.object({
   type: z.union([z.literal("https"), z.literal("socks")]),
-  host: ipOrDomainSchema,
+  host: ipSchema,
   port: z
     .string()
     .regex(/\d+/, "Must be a number")
