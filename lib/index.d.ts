@@ -1,4 +1,5 @@
 import fs from 'fs';
+import * as winston from 'winston';
 import { HttpsProxyAgent } from 'https-proxy-agent';
 import { SocksProxyAgent } from 'socks-proxy-agent';
 import { z, ZodNever, Primitive, ZodLiteral } from 'zod';
@@ -16,6 +17,8 @@ declare const readdir: (dir: fs.PathLike) => string[];
 declare const readFile: (name: fs.PathOrFileDescriptor) => string;
 declare const readByLine: (name: string) => string[];
 declare const appendFile: (name: fs.PathOrFileDescriptor, data: string | Uint8Array) => void;
+
+declare const initDefaultLogger: (consoleLevel?: "info" | "debug") => winston.Logger;
 
 declare class IniConfig<F extends z.ZodTypeAny, D extends z.ZodTypeAny> {
     private readonly fileName;
@@ -107,16 +110,32 @@ declare const formatUrlParams: (searchParams: Record<string, string | number>) =
 declare const getMyIp: () => Promise<any>;
 declare const waitInternetConnectionLoop: (sleepSec: number | undefined, maxRetries: number | undefined, onWait: () => void) => Promise<void>;
 
-type ProxyItem = {
-    type: "http" | "socks";
+declare const proxySchema: z.ZodObject<{
+    type: z.ZodUnion<[z.ZodLiteral<"https">, z.ZodLiteral<"socks">]>;
+    host: z.ZodEffects<z.ZodString, string, string>;
+    port: z.ZodEffects<z.ZodString, number, string>;
+    username: z.ZodString;
+    password: z.ZodString;
+    changeUrl: z.ZodOptional<z.ZodString>;
+}, "strip", z.ZodTypeAny, {
+    type: "https" | "socks";
     host: string;
-    port: number | string;
+    port: number;
     username: string;
     password: string;
-};
-declare const getProxyAgent: (proxy?: ProxyItem) => HttpsProxyAgent<`http://${string}:${string}@${string}:${string}` | `http://${string}:${string}@${string}:${number}`> | SocksProxyAgent | undefined;
-declare const getProxies: (proxy: string, divider?: string) => {
-    type: "http" | "socks";
+    changeUrl?: string | undefined;
+}, {
+    type: "https" | "socks";
+    host: string;
+    port: string;
+    username: string;
+    password: string;
+    changeUrl?: string | undefined;
+}>;
+type ProxyItem = Omit<z.infer<typeof proxySchema>, "changeUrl">;
+declare const getProxyAgent: (proxy?: ProxyItem) => HttpsProxyAgent<`http://${string}:${string}@${string}:${number}`> | SocksProxyAgent | undefined;
+declare const parseProxy: (proxy: string, divider?: string) => {
+    type: "https" | "socks";
     host: string;
     port: number;
     username: string;
@@ -150,6 +169,6 @@ declare const evmPrivateKeySchema: z.ZodEffects<z.ZodEffects<z.ZodString, string
 
 declare const formatZodError: (issues: z.ZodIssue[]) => string;
 
-declare const ipOrDomainSchema: z.ZodEffects<z.ZodString, string, string>;
+declare const ipSchema: z.ZodEffects<z.ZodString, string, string>;
 
-export { IniConfig, ProgressState, Queue, Telegram, appendFile, createFiles, createUnionSchema, evmAddressSchema, evmPrivateKeySchema, formatRel, formatShortString, formatUrlParams, formatZodError, getMyIp, getObjectKeys, getProxies, getProxyAgent, ipOrDomainSchema, nowPrefix, onlyUnique, randomChoice, randomChoices, randomFloat, randomInt, randomUserAgent, readByLine, readFile, readdir, replaceAll, roundToDecimal, shuffle, sleep, sortStrings, splitIntoAvgChunks, waitInternetConnectionLoop, writeFile };
+export { IniConfig, ProgressState, type ProxyItem, Queue, Telegram, appendFile, createFiles, createUnionSchema, evmAddressSchema, evmPrivateKeySchema, formatRel, formatShortString, formatUrlParams, formatZodError, getMyIp, getObjectKeys, getProxyAgent, initDefaultLogger, ipSchema as ipOrDomainSchema, nowPrefix, onlyUnique, parseProxy, randomChoice, randomChoices, randomFloat, randomInt, randomUserAgent, readByLine, readFile, readdir, replaceAll, roundToDecimal, shuffle, sleep, sortStrings, splitIntoAvgChunks, waitInternetConnectionLoop, writeFile };
