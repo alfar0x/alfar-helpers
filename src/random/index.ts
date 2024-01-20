@@ -1,4 +1,4 @@
-import { readByLine } from "../files";
+import { readByLine } from "../file";
 
 export const randomChoice = <T>(array: T[]) =>
   array[Math.floor(Math.random() * array.length)];
@@ -30,3 +30,20 @@ export const randomFloat = (
 
 export const randomUserAgent = () =>
   randomChoice(readByLine("./assets/user-agents.txt"));
+
+export const shuffle = <T>(array: T[]): T[] =>
+  [...array].sort(() => Math.random() - 0.5);
+
+const randomChoices = <T>(
+  array: T[],
+  count: number,
+  isDuplicates = true
+): T[] => {
+  if (isDuplicates) {
+    return Array.from({ length: count }).map(() => randomChoice(array));
+  }
+
+  return shuffle(array).slice(0, count);
+};
+
+export default randomChoices;

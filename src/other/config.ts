@@ -1,7 +1,7 @@
 import * as ini from "ini";
 import { z, ZodObject } from "zod";
 import { nowPrefix } from ".";
-import { readFile, writeFile } from "../files";
+import { readFile, writeFile } from "../file";
 
 class Config<T extends ZodObject<any, any, any>> {
   private readonly fileName: string;

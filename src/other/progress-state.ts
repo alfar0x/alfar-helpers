@@ -1,4 +1,4 @@
-import { formatRel } from "../date-time";
+import { formatRel } from "../time";
 
 class ProgressState {
   private allCount: number;

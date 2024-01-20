@@ -4,7 +4,7 @@ import {
   differenceInMinutes,
   formatDistanceToNowStrict,
 } from "date-fns";
-import { replaceAll } from "../strings";
+import { replaceAll } from "../string";
 
 const distanceReplacers = [
   { search: " seconds", replace: "s" },
