@@ -93,7 +93,7 @@ class IniConfig<F extends z.ZodTypeAny, D extends z.ZodTypeAny> {
   }
 
   resetFile() {
-    if (this.checkIsFileValid()) return;
+    if (this.checkIsFileValid()) return false;
 
     try {
       const splittedName = this.fileName.split("/");
@@ -107,6 +107,8 @@ class IniConfig<F extends z.ZodTypeAny, D extends z.ZodTypeAny> {
     } catch (error) {}
 
     writeFile(this.fileName, ini.stringify(this.defaultValues));
+
+    return true;
   }
 }
 
