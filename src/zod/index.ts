@@ -9,5 +9,5 @@ export {
   evmAddressSchema,
   evmPrivateKeySchema,
   formatZodError,
-  ipSchema as ipOrDomainSchema,
+  ipSchema,
 };
