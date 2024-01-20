@@ -17,7 +17,7 @@ declare const readByLine: (name: string) => string[];
 declare const appendFile: (name: fs.PathOrFileDescriptor, data: string | Uint8Array) => void;
 declare const writeFile: (name: fs.PathOrFileDescriptor, data: string | Uint8Array) => void;
 
-declare class Config<T extends ZodObject<any, any, any>> {
+declare class IniConfig<T extends ZodObject<any, any, any>> {
     private readonly fileName;
     private readonly configSchema;
     private readonly defaultValues;
@@ -119,6 +119,7 @@ declare const roundToDecimal: (n: number, decimalPlaces: number) => number;
 declare const randomFloat: (min: number, max: number, decimalPlaces: number) => number;
 declare const randomUserAgent: () => string;
 declare const shuffle: <T>(array: T[]) => T[];
+declare const randomChoices: <T>(array: T[], count: number, isDuplicates?: boolean) => T[];
 
 declare const replaceAll: (str: string, replacers: {
     search: string;
@@ -140,4 +141,4 @@ declare const formatZodError: (issues: z.ZodIssue[]) => string;
 
 declare const ipOrDomainSchema: z.ZodEffects<z.ZodString, string, string>;
 
-export { Config, ProgressState, Queue, Telegram, appendFile, createFiles, createUnionSchema, evmAddressSchema, evmPrivateKeySchema, formatRel, formatShortString, formatUrlParams, formatZodError, getMyIp, getObjectKeys, getProxies, getProxyAgent, ipOrDomainSchema, nowPrefix, onlyUnique, randomChoice, randomFloat, randomInt, randomUserAgent, readByLine, readFile, readdir, replaceAll, roundToDecimal, shuffle, sleep, sortStrings, splitIntoAvgChunks, waitInternetConnectionLoop, writeFile };
+export { IniConfig, ProgressState, Queue, Telegram, appendFile, createFiles, createUnionSchema, evmAddressSchema, evmPrivateKeySchema, formatRel, formatShortString, formatUrlParams, formatZodError, getMyIp, getObjectKeys, getProxies, getProxyAgent, ipOrDomainSchema, nowPrefix, onlyUnique, randomChoice, randomChoices, randomFloat, randomInt, randomUserAgent, readByLine, readFile, readdir, replaceAll, roundToDecimal, shuffle, sleep, sortStrings, splitIntoAvgChunks, waitInternetConnectionLoop, writeFile };

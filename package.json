@@ -1,6 +1,6 @@
 {
   "name": "@alfar/helpers",
-  "version": "0.0.8",
+  "version": "0.0.9",
   "description": "Helper functions for myself",
   "author": "alfarcrypto@gmail.com",
   "license": "MIT",
@@ -16,7 +16,10 @@
     "url": "https://github.com/alfar0x/alfar-helpers"
   },
   "scripts": {
-    "build": "tsup"
+    "build": "tsup",
+    "pub": "yarn build && npm version patch && npm publish",
+    "pub-minor": "yarn build && npm version minor && npm publish",
+    "pub-major": "yarn build && npm version major && npm publish"
   },
   "devDependencies": {
     "@total-typescript/ts-reset": "^0.4.2",
