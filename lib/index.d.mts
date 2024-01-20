@@ -1,7 +1,12 @@
 import fs from 'fs';
 import { HttpsProxyAgent } from 'https-proxy-agent';
 import { SocksProxyAgent } from 'socks-proxy-agent';
-import { ZodObject, z } from 'zod';
+import { ZodObject, z, ZodNever, Primitive, ZodLiteral } from 'zod';
+
+declare const onlyUnique: <T>(value: T, index: number, array: T[]) => boolean;
+declare const sortStrings: (a: string, b: string) => number;
+declare const splitIntoAvgChunks: <T>(arr: T[], maxChunkSize: number) => T[][];
+declare const formatShortString: (str: string, symbolsCount: number, endSymbols?: number) => string;
 
 declare const formatRel: (sec: number) => string;
 
@@ -73,9 +78,23 @@ declare class Telegram {
     getUpdates(): Promise<string[]>;
 }
 
+declare class Queue<T> {
+    protected storage: T[];
+    constructor(storage?: T[]);
+    push(element: T): void;
+    pushMany(...elements: T[]): void;
+    shift(): T | null;
+    isEmpty(): boolean;
+    size(): number;
+    toString(): string;
+}
+
 declare const nowPrefix: () => string;
 declare const sleep: (sec: number) => Promise<unknown>;
-declare const onlyUnique: <T>(value: T, index: number, array: T[]) => boolean;
+declare const getObjectKeys: <T extends object>(obj: T) => (keyof T)[];
+declare const formatUrlParams: (searchParams: Record<string, string | number>) => string;
+declare const getMyIp: () => Promise<any>;
+declare const waitInternetConnectionLoop: (sleepSec: number | undefined, maxRetries: number | undefined, onWait: () => void) => Promise<void>;
 
 type ProxyItem = {
     type: "http" | "socks";
@@ -99,10 +118,26 @@ declare const randomInt: (min: number, max: number) => number;
 declare const roundToDecimal: (n: number, decimalPlaces: number) => number;
 declare const randomFloat: (min: number, max: number, decimalPlaces: number) => number;
 declare const randomUserAgent: () => string;
+declare const shuffle: <T>(array: T[]) => T[];
 
 declare const replaceAll: (str: string, replacers: {
     search: string;
     replace: string;
 }[]) => string;
 
-export { Config, ProgressState, Telegram, appendFile, createFiles, formatRel, getProxies, getProxyAgent, nowPrefix, onlyUnique, randomChoice, randomFloat, randomInt, randomUserAgent, readByLine, readFile, readdir, replaceAll, roundToDecimal, sleep, writeFile };
+type MappedZodLiterals<T extends readonly Primitive[]> = {
+    -readonly [K in keyof T]: ZodLiteral<T[K]>;
+};
+declare function createUnionSchema<T extends readonly []>(values: T): ZodNever;
+declare function createUnionSchema<T extends readonly [Primitive]>(values: T): ZodLiteral<T[0]>;
+declare function createUnionSchema<T extends readonly [Primitive, Primitive, ...Primitive[]]>(values: T): z.ZodUnion<MappedZodLiterals<T>>;
+
+declare const evmAddressSchema: z.ZodEffects<z.ZodEffects<z.ZodString, string, string>, string, string>;
+
+declare const evmPrivateKeySchema: z.ZodEffects<z.ZodEffects<z.ZodString, string, string>, string, string>;
+
+declare const formatZodError: (issues: z.ZodIssue[]) => string;
+
+declare const ipOrDomainSchema: z.ZodEffects<z.ZodString, string, string>;
+
+export { Config, ProgressState, Queue, Telegram, appendFile, createFiles, createUnionSchema, evmAddressSchema, evmPrivateKeySchema, formatRel, formatShortString, formatUrlParams, formatZodError, getMyIp, getObjectKeys, getProxies, getProxyAgent, ipOrDomainSchema, nowPrefix, onlyUnique, randomChoice, randomFloat, randomInt, randomUserAgent, readByLine, readFile, readdir, replaceAll, roundToDecimal, shuffle, sleep, sortStrings, splitIntoAvgChunks, waitInternetConnectionLoop, writeFile };

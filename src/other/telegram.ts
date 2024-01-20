@@ -1,4 +1,4 @@
-import { onlyUnique } from ".";
+import { onlyUnique } from "../array";
 
 interface Message {
   message: {
