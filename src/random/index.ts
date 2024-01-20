@@ -34,7 +34,7 @@ export const randomUserAgent = () =>
 export const shuffle = <T>(array: T[]): T[] =>
   [...array].sort(() => Math.random() - 0.5);
 
-const randomChoices = <T>(
+export const randomChoices = <T>(
   array: T[],
   count: number,
   isDuplicates = true

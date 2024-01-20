@@ -1,5 +1,5 @@
 export * from "./array";
-export * from "./time";
+export * from "./date-time";
 export * from "./file";
 export * from "./logger";
 export * from "./other";
