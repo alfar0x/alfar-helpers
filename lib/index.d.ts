@@ -1,7 +1,7 @@
 import fs from 'fs';
 import { HttpsProxyAgent } from 'https-proxy-agent';
 import { SocksProxyAgent } from 'socks-proxy-agent';
-import { ZodObject, z, ZodNever, Primitive, ZodLiteral } from 'zod';
+import { z, ZodNever, Primitive, ZodLiteral } from 'zod';
 
 declare const onlyUnique: <T>(value: T, index: number, array: T[]) => boolean;
 declare const sortStrings: (a: string, b: string) => number;
@@ -11,23 +11,34 @@ declare const formatShortString: (str: string, symbolsCount: number, endSymbols?
 declare const formatRel: (sec: number) => string;
 
 declare const createFiles: (paths: string[]) => void;
+declare const writeFile: (name: fs.PathOrFileDescriptor, data: string | Uint8Array) => void;
 declare const readdir: (dir: fs.PathLike) => string[];
 declare const readFile: (name: fs.PathOrFileDescriptor) => string;
 declare const readByLine: (name: string) => string[];
 declare const appendFile: (name: fs.PathOrFileDescriptor, data: string | Uint8Array) => void;
-declare const writeFile: (name: fs.PathOrFileDescriptor, data: string | Uint8Array) => void;
 
-declare class IniConfig<T extends ZodObject<any, any, any>> {
+declare class IniConfig<F extends z.ZodTypeAny, D extends z.ZodTypeAny> {
     private readonly fileName;
-    private readonly configSchema;
-    private readonly defaultValues;
-    constructor(fileName: string, configSchema: T, defaultValues: z.infer<T>);
-    getConfig: () => {
-        [x: string]: any;
-    };
-    private initializeConfig;
-    checkIsConfigValid: () => boolean;
-    updateConfig: () => void;
+    private readonly schema;
+    readonly fixed: z.infer<F>;
+    private _dynamic;
+    private onDynamicError;
+    private defaultValues;
+    constructor(params: {
+        fileName: string;
+        fixedSchema: F;
+        dynamicSchema: D;
+        onDynamicError: (msg: string) => void;
+        defaultValues: {
+            fixed: z.infer<F>;
+            dynamic: z.infer<D>;
+        };
+    });
+    private getConfigData;
+    dynamic(): z.TypeOf<D>;
+    initializeConfig: () => void;
+    checkIsConfigValid(): boolean;
+    updateConfig(): void;
 }
 
 declare class ProgressState {
