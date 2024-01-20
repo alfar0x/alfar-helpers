@@ -37,11 +37,10 @@ declare class IniConfig<F extends z.ZodTypeAny, D extends z.ZodTypeAny> {
             dynamic: z.infer<D>;
         };
     });
-    private getConfigData;
+    private getFileData;
     dynamic(): z.TypeOf<D>;
-    initializeConfig: () => void;
-    checkIsConfigValid(): boolean;
-    updateConfig(): void;
+    checkIsFileValid(): boolean;
+    resetFile(): void;
 }
 declare const iniNumberSchema: z.ZodEffects<z.ZodString, number, string>;
 
