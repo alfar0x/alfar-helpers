@@ -1,8 +1,9 @@
 import Config from "./config";
 import ProgressState from "./progress-state";
 import Telegram from "./telegram";
+import Queue from "./queue";
 
-export { Config, ProgressState, Telegram };
+export { Config, ProgressState, Telegram, Queue };
 
 export const nowPrefix = () => {
   const now = new Date();
