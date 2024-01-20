@@ -3,7 +3,7 @@ import { z, ZodObject } from "zod";
 import { nowPrefix } from ".";
 import { readFile, writeFile } from "../file";
 
-class Config<T extends ZodObject<any, any, any>> {
+class IniConfig<T extends ZodObject<any, any, any>> {
   private readonly fileName: string;
   private readonly configSchema: T;
   private readonly defaultValues: z.infer<T>;
@@ -48,4 +48,4 @@ export const iniNumberSchema = z
   .regex(/\d+/, "Must be a number")
   .transform((str) => Number(str));
 
-export default Config;
+export default IniConfig;
