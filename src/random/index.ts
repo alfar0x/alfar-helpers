@@ -1,3 +1,4 @@
+import path from "path";
 import { readByLine } from "../file";
 
 export const randomChoice = <T>(array: T[]) =>
@@ -28,8 +29,10 @@ export const randomFloat = (
   return roundToDecimal(rnd, decimalPlaces);
 };
 
-export const randomUserAgent = () =>
-  randomChoice(readByLine("./assets/user-agents.txt"));
+export const randomUserAgent = () => {
+  const filePath = path.join(__dirname, "assets/user-agents.txt");
+  return randomChoice(readByLine(filePath));
+};
 
 export const shuffle = <T>(array: T[]): T[] =>
   [...array].sort(() => Math.random() - 0.5);
