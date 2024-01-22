@@ -30,7 +30,7 @@ export const randomFloat = (
 };
 
 export const randomUserAgent = () => {
-  const filePath = path.join(__dirname, "assets/user-agents.txt");
+  const filePath = path.join(__dirname, "../", "assets/user-agents.txt");
   return randomChoice(readByLine(filePath));
 };
 
