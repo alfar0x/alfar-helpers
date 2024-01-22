@@ -47,10 +47,15 @@ class IniConfig<F extends z.ZodTypeAny, D extends z.ZodTypeAny> {
         : fixedSchema.optional(),
     });
 
-    const { fixed, dynamic } = this.getFileData();
+    try {
+      const { fixed, dynamic } = this.getFileData();
 
-    this._dynamic = dynamic;
-    this.fixed = fixed;
+      this._dynamic = dynamic;
+      this.fixed = fixed;
+    } catch (error) {
+      this.resetFile();
+      throw error;
+    }
   }
 
   private getFileData() {
@@ -61,8 +66,6 @@ class IniConfig<F extends z.ZodTypeAny, D extends z.ZodTypeAny> {
     if (result.success) return result.data;
 
     const errorMessage = formatZodError(result.error.issues);
-
-    this.resetFile();
 
     throw new Error(errorMessage);
   }
