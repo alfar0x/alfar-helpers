@@ -40,6 +40,7 @@ export const getProxyAgent = (proxy?: ProxyItem) => {
 };
 
 export const parseProxy = (proxy: string, divider = ";") => {
-  const [type, host, port, user, pass, changeUrl] = proxy.split(divider);
-  return proxySchema.parse({ type, host, port, user, pass, changeUrl });
+  const [type, host, port, username, password, changeUrl] =
+    proxy.split(divider);
+  return proxySchema.parse({ type, host, port, username, password, changeUrl });
 };
