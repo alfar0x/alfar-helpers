@@ -1,6 +1,6 @@
 {
   "name": "@alfar/helpers",
-  "version": "0.0.23",
+  "version": "0.0.24",
   "description": "Helper functions for myself",
   "author": "alfarcrypto@gmail.com",
   "license": "MIT",
@@ -8,7 +8,8 @@
   "module": "./lib/index.mjs",
   "types": "./lib/index.d.ts",
   "files": [
-    "lib", "assets"
+    "lib",
+    "assets"
   ],
   "homepage": "https://github.com/alfar0x/alfar-helpers#readme",
   "repository": {
