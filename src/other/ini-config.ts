@@ -25,6 +25,7 @@ class IniConfig<F extends z.ZodTypeAny, D extends z.ZodTypeAny> {
     dynamicSchema: D;
     onDynamicError: (msg: string) => void;
     defaultValues: { fixed: z.infer<F>; dynamic: z.infer<D> };
+    disableInitialize?: boolean;
   }) {
     const {
       fileName,
@@ -32,6 +33,7 @@ class IniConfig<F extends z.ZodTypeAny, D extends z.ZodTypeAny> {
       dynamicSchema,
       onDynamicError,
       defaultValues,
+      disableInitialize = false,
     } = params;
 
     this.fileName = fileName;
@@ -49,6 +51,8 @@ class IniConfig<F extends z.ZodTypeAny, D extends z.ZodTypeAny> {
 
     this._fixed = null;
     this._dynamic = null;
+
+    if (!disableInitialize) this.initialize();
   }
 
   private getFileData() {
@@ -73,7 +77,7 @@ class IniConfig<F extends z.ZodTypeAny, D extends z.ZodTypeAny> {
     }
   }
 
-  public fixed() {
+  public get fixed() {
     if (!this._fixed) throw new Error("Config is not initialized!");
     return this._fixed;
   }
