@@ -25,6 +25,7 @@ class IniConfig<F extends z.ZodTypeAny, D extends z.ZodTypeAny> {
     dynamicSchema: D;
     onDynamicError: (msg: string) => void;
     defaultValues: { fixed: z.infer<F>; dynamic: z.infer<D> };
+    isInit?: boolean;
   }) {
     const {
       fileName,
@@ -32,6 +33,7 @@ class IniConfig<F extends z.ZodTypeAny, D extends z.ZodTypeAny> {
       dynamicSchema,
       onDynamicError,
       defaultValues,
+      isInit,
     } = params;
 
     this.fileName = fileName;
@@ -54,7 +56,13 @@ class IniConfig<F extends z.ZodTypeAny, D extends z.ZodTypeAny> {
       this.fixed = fixed;
     } catch (error) {
       this.resetFile();
-      throw error;
+
+      if (!isInit) throw error;
+
+      const { fixed, dynamic } = this.getFileData();
+
+      this._dynamic = dynamic;
+      this.fixed = fixed;
     }
   }
 

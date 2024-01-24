@@ -21,6 +21,11 @@ const distanceReplacers = [
   { search: " year", replace: "y" },
 ];
 
+const relativeReplaces = [
+  { search: "today at ", replace: "" },
+  { search: "tomorrow at ", replace: "" },
+];
+
 export const formatRel = (sec: number) => {
   const time = addSeconds(new Date(), sec);
 
@@ -29,7 +34,7 @@ export const formatRel = (sec: number) => {
   const relFormatted =
     differenceInMinutes(time, new Date()) > 24 * 60
       ? relative
-      : relative.replace("today at ", "").replace("tomorrow at ", "");
+      : replaceAll(relative, relativeReplaces);
 
   const distance = replaceAll(
     formatDistanceToNowStrict(time),
