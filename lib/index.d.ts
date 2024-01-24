@@ -23,7 +23,7 @@ declare const initDefaultLogger: (consoleLevel?: "info" | "debug") => winston.Lo
 declare class IniConfig<F extends z.ZodTypeAny, D extends z.ZodTypeAny> {
     private readonly fileName;
     private readonly schema;
-    readonly fixed: z.infer<F>;
+    private _fixed;
     private _dynamic;
     private onDynamicError;
     private defaultValues;
@@ -36,11 +36,12 @@ declare class IniConfig<F extends z.ZodTypeAny, D extends z.ZodTypeAny> {
             fixed: z.infer<F>;
             dynamic: z.infer<D>;
         };
-        isInit?: boolean;
     });
     private getFileData;
+    initialize(): void;
+    fixed(): NonNullable<z.TypeOf<F>>;
     dynamic(): z.TypeOf<D>;
-    private checkIsFileValid;
+    checkIsFileValid(): boolean;
     resetFile(): boolean;
 }
 declare const iniNumberSchema: z.ZodEffects<z.ZodString, number, string>;
