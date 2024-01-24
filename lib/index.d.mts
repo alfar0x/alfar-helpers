@@ -36,6 +36,7 @@ declare class IniConfig<F extends z.ZodTypeAny, D extends z.ZodTypeAny> {
             fixed: z.infer<F>;
             dynamic: z.infer<D>;
         };
+        isInit?: boolean;
     });
     private getFileData;
     dynamic(): z.TypeOf<D>;
