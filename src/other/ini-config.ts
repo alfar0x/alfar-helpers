@@ -13,8 +13,8 @@ class IniConfig<F extends z.ZodTypeAny, D extends z.ZodTypeAny> {
     dynamic: D | ZodOptional<D>;
   }>;
 
-  public readonly fixed: z.infer<F>;
-  private _dynamic: z.infer<D>;
+  private _fixed: z.infer<F> | null;
+  private _dynamic: z.infer<D> | null;
 
   private onDynamicError: (msg: string) => void;
   private defaultValues: { fixed: z.infer<F>; dynamic: z.infer<D> };
@@ -25,7 +25,6 @@ class IniConfig<F extends z.ZodTypeAny, D extends z.ZodTypeAny> {
     dynamicSchema: D;
     onDynamicError: (msg: string) => void;
     defaultValues: { fixed: z.infer<F>; dynamic: z.infer<D> };
-    isInit?: boolean;
   }) {
     const {
       fileName,
@@ -33,7 +32,6 @@ class IniConfig<F extends z.ZodTypeAny, D extends z.ZodTypeAny> {
       dynamicSchema,
       onDynamicError,
       defaultValues,
-      isInit,
     } = params;
 
     this.fileName = fileName;
@@ -49,21 +47,8 @@ class IniConfig<F extends z.ZodTypeAny, D extends z.ZodTypeAny> {
         : fixedSchema.optional(),
     });
 
-    try {
-      const { fixed, dynamic } = this.getFileData();
-
-      this._dynamic = dynamic;
-      this.fixed = fixed;
-    } catch (error) {
-      this.resetFile();
-
-      if (!isInit) throw error;
-
-      const { fixed, dynamic } = this.getFileData();
-
-      this._dynamic = dynamic;
-      this.fixed = fixed;
-    }
+    this._fixed = null;
+    this._dynamic = null;
   }
 
   private getFileData() {
@@ -73,12 +58,29 @@ class IniConfig<F extends z.ZodTypeAny, D extends z.ZodTypeAny> {
 
     if (result.success) return result.data;
 
-    const errorMessage = formatZodError(result.error.issues);
+    throw new Error(formatZodError(result.error.issues));
+  }
 
-    throw new Error(errorMessage);
+  public initialize() {
+    try {
+      const { fixed, dynamic } = this.getFileData();
+
+      this._dynamic = dynamic;
+      this._fixed = fixed;
+    } catch (error) {
+      this.resetFile();
+      throw error;
+    }
+  }
+
+  public fixed() {
+    if (!this._fixed) throw new Error("Config is not initialized!");
+    return this._fixed;
   }
 
   public dynamic() {
+    if (!this._dynamic) throw new Error("Config is not initialized!");
+
     try {
       this._dynamic = this.getFileData().dynamic;
     } catch (error) {
@@ -92,7 +94,7 @@ class IniConfig<F extends z.ZodTypeAny, D extends z.ZodTypeAny> {
     return this._dynamic;
   }
 
-  private checkIsFileValid() {
+  public checkIsFileValid() {
     try {
       const iniContent = readFile(this.fileName);
       const parsedIni = ini.parse(iniContent);
@@ -103,9 +105,7 @@ class IniConfig<F extends z.ZodTypeAny, D extends z.ZodTypeAny> {
     }
   }
 
-  resetFile() {
-    if (this.checkIsFileValid()) return false;
-
+  public resetFile() {
     try {
       const splittedName = this.fileName.split("/");
       const fileName = splittedName[splittedName.length - 1];
