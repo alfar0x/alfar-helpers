@@ -36,10 +36,11 @@ declare class IniConfig<F extends z.ZodTypeAny, D extends z.ZodTypeAny> {
             fixed: z.infer<F>;
             dynamic: z.infer<D>;
         };
+        disableInitialize?: boolean;
     });
     private getFileData;
     initialize(): void;
-    fixed(): NonNullable<z.TypeOf<F>>;
+    get fixed(): NonNullable<z.TypeOf<F>>;
     dynamic(): z.TypeOf<D>;
     checkIsFileValid(): boolean;
     resetFile(): boolean;
