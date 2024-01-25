@@ -76,7 +76,7 @@ class IniConfig<F extends z.ZodTypeAny, D extends z.ZodTypeAny> {
   public get fixed() {
     if (!this._fixed) this.initialize();
 
-    return this._fixed;
+    return this._fixed as z.TypeOf<F>;
   }
 
   public dynamic() {
@@ -92,7 +92,7 @@ class IniConfig<F extends z.ZodTypeAny, D extends z.ZodTypeAny> {
       );
     }
 
-    return this._dynamic;
+    return this._dynamic as z.TypeOf<D>;
   }
 
   public checkIsFileValid() {
