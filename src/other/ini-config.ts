@@ -115,7 +115,9 @@ class IniConfig<F extends z.ZodTypeAny, D extends z.ZodTypeAny> {
         splittedName.slice(0, -1).join("/") + `/${nowPrefix()}_${fileName}`;
 
       const configBackup = readFile(this.fileName);
-      writeFile(backupFileName, configBackup);
+      if (configBackup.trim().length) {
+        writeFile(backupFileName, configBackup);
+      }
     } catch (error) {}
 
     writeFile(this.fileName, ini.stringify(this.defaultValues));
