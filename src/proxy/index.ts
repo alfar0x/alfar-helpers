@@ -1,7 +1,7 @@
 import { HttpsProxyAgent } from "https-proxy-agent";
 import { SocksProxyAgent } from "socks-proxy-agent";
 import { z } from "zod";
-import { ipSchema } from "../zod";
+import { formatZodError, ipSchema } from "../zod";
 
 const proxySchema = z.object({
   type: z.union([z.literal("https"), z.literal("socks")]),
@@ -42,5 +42,16 @@ export const getProxyAgent = (proxy?: ProxyItem) => {
 export const parseProxy = (proxy: string, divider = ";") => {
   const [type, host, port, username, password, changeUrl] =
     proxy.split(divider);
-  return proxySchema.parse({ type, host, port, username, password, changeUrl });
+  const parsed = proxySchema.safeParse({
+    type,
+    host,
+    port,
+    username,
+    password,
+    changeUrl,
+  });
+
+  if (!parsed.success) throw new Error(formatZodError(parsed.error.issues));
+
+  return parsed.data;
 };
