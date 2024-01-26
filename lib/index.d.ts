@@ -105,6 +105,8 @@ declare class Queue<T> {
     toString(): string;
 }
 
+declare const getGeskoPrices: <T extends string>(tokens: T[]) => Promise<Record<T, number>>;
+
 declare const nowPrefix: () => string;
 declare const sleep: (sec: number) => Promise<unknown>;
 declare const getObjectKeys: <T extends object>(obj: T) => (keyof T)[];
@@ -174,4 +176,4 @@ declare const formatZodError: (issues: z.ZodIssue[]) => string;
 
 declare const ipSchema: z.ZodEffects<z.ZodString, string, string>;
 
-export { IniConfig, ProgressState, type ProxyItem, Queue, Telegram, appendFile, createFiles, createUnionSchema, evmAddressSchema, evmPrivateKeySchema, formatRel, formatShortString, formatUrlParams, formatZodError, getMyIp, getObjectKeys, getProxyAgent, iniNumberSchema, initDefaultLogger, ipSchema, nowPrefix, onlyUnique, parseProxy, randomChoice, randomChoices, randomFloat, randomInt, randomUserAgent, readByLine, readFile, readdir, replaceAll, roundToDecimal, shuffle, sleep, sortStrings, splitIntoAvgChunks, waitInternetConnectionLoop, writeFile, zip };
+export { IniConfig, ProgressState, type ProxyItem, Queue, Telegram, appendFile, createFiles, createUnionSchema, evmAddressSchema, evmPrivateKeySchema, formatRel, formatShortString, formatUrlParams, formatZodError, getGeskoPrices, getMyIp, getObjectKeys, getProxyAgent, iniNumberSchema, initDefaultLogger, ipSchema, nowPrefix, onlyUnique, parseProxy, randomChoice, randomChoices, randomFloat, randomInt, randomUserAgent, readByLine, readFile, readdir, replaceAll, roundToDecimal, shuffle, sleep, sortStrings, splitIntoAvgChunks, waitInternetConnectionLoop, writeFile, zip };
