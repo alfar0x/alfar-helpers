@@ -2,8 +2,16 @@ import IniConfig, { iniNumberSchema } from "./ini-config";
 import ProgressState from "./progress-state";
 import Telegram from "./telegram";
 import Queue from "./queue";
+import getGeskoPrices from "./get-gesko-prices";
 
-export { IniConfig, iniNumberSchema, ProgressState, Telegram, Queue };
+export {
+  IniConfig,
+  iniNumberSchema,
+  ProgressState,
+  Telegram,
+  Queue,
+  getGeskoPrices,
+};
 
 export const nowPrefix = () => {
   const now = new Date();
